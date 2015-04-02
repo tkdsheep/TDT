@@ -12,6 +12,10 @@ import java.util.List;
 
 import qiaohuang.tdt.core.Document;
 
+/**
+ * @author qiaohuang
+ *
+ */
 public class DocFileReader {
 	
 	

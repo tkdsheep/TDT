@@ -3,6 +3,13 @@ package qiaohuang.tdt.core;
 import java.util.Calendar;
 
 
+
+/**
+ * @author qiaohuang
+ * a document is a news article
+ *
+ */
+
 public class Document {
 	
 	private String title, content, url, source;// source may be null
