@@ -11,7 +11,7 @@ public class Topic {
 	
 	List<Article> articles;
 	
-	Map<String,Double> termVector; 
+	Map<String,Double> wordVector; 
 	/*
 	 * defined as the arithmetic average of term vectors of all articles in this topic
 	 * String is term, Double is weight

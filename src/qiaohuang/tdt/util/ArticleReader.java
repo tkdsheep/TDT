@@ -51,9 +51,7 @@ public class ArticleReader {
 				Article article = new Article();
 
 				article.setTitle(reader.readLine());
-
 				article.setUrl(reader.readLine());
-
 				Calendar calendar = Calendar.getInstance();
 				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				try {  
@@ -62,8 +60,8 @@ public class ArticleReader {
 		            e.printStackTrace(); 
 		        }  
 				article.setCalendar(calendar);
-
 				article.setContent(reader.readLine());
+				
 				
 				articles.add(article);
 
