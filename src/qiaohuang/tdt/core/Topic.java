@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public class Topic {
 	
-	List<Document> docs;
+	List<Article> articles;
 	
 	Map<String,Double> termVector; 
 	/*

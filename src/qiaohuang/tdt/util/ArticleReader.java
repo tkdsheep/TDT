@@ -10,26 +10,26 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import qiaohuang.tdt.core.Document;
+import qiaohuang.tdt.core.Article;
 
 /**
  * @author qiaohuang
  *
  */
-public class DocFileReader {
+public class ArticleReader {
 	
 	
-	public void readDocFiles(String dirPath,List<Document> docs){
+	public void readArticleFiles(String dirPath,List<Article> articles){
 		
 		/*
-		 * Read all news documents in a single directory
-		 * These documents have the same "Calendar" (same day) 
+		 * Read all news articles in a single directory
+		 * These articles have the same "Calendar" (same day) 
 		 * The algorithm's default time slot setting is ONE DAY
 		 */
 		
 		
 		/*
-		 * Sample news document:
+		 * Sample news article:
 		 * 
 		 * title	吕秀莲结束“救扁绝食” 送医开始喝米汤
 		 * url		http://news.ifeng.com/a/20150101/42845791_0.shtml
@@ -40,19 +40,19 @@ public class DocFileReader {
 		 * 
 		 */
 		
-		for (File docFile : new File(dirPath).listFiles()) {
+		for (File articleFile : new File(dirPath).listFiles()) {
 			
 			BufferedReader reader = null;
 
 			try {
 
-				reader = new BufferedReader(new FileReader(docFile));
+				reader = new BufferedReader(new FileReader(articleFile));
 
-				Document doc = new Document();
+				Article article = new Article();
 
-				doc.setTitle(reader.readLine());
+				article.setTitle(reader.readLine());
 
-				doc.setUrl(reader.readLine());
+				article.setUrl(reader.readLine());
 
 				Calendar calendar = Calendar.getInstance();
 				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -61,9 +61,11 @@ public class DocFileReader {
 				}catch (ParseException e) {  
 		            e.printStackTrace(); 
 		        }  
-				doc.setCalendar(calendar);
+				article.setCalendar(calendar);
 
-				doc.setContent(reader.readLine());
+				article.setContent(reader.readLine());
+				
+				articles.add(article);
 
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();

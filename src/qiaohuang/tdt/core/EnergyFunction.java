@@ -8,11 +8,11 @@ package qiaohuang.tdt.core;
 public class EnergyFunction {
 
 	
-	public double getEnergy(Document doc,Topic topic){
+	public double getEnergy(Article article,Topic topic){
 		
 		double energy = 0;
 		
-		//todo energy = sim(doc,topic)
+		//todo energy = sim(article,topic)
 		
 		return energy;
 	}

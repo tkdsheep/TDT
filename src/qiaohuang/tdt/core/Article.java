@@ -6,16 +6,16 @@ import java.util.Calendar;
 
 /**
  * @author qiaohuang
- * a document is a news article
+ * 
  *
  */
 
-public class Document {
+public class Article {
 	
 	private String title, content, url, source;// source may be null
 	private Calendar calendar;
 	
-	public Document(){
+	public Article(){
 		
 	}
 
