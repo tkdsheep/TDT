@@ -53,7 +53,7 @@ public class Article {
             }
             else{          
             	WordInfo word = new WordInfo(name);
-            	word.setDf(1);
+            	word.setTf(1);
             	words.put(name,word);
             }
 		}
