@@ -1,5 +1,7 @@
 package qiaohuang.tdt.core;
 
+import qiaohuang.tdt.conf.GlobalParam;
+
 
 /**
  * @author qiaohuang
@@ -8,36 +10,24 @@ package qiaohuang.tdt.core;
 public class EnergyFunction {
 
 	
-	public double getEnergy(Article article,Topic topic){
+	public static double getEnergy(Article article,Topic topic){
 		
-		double energy = 0;
-		
-		//todo energy = sim(article,topic)
-		
-		return energy;
+		return SimFunction.cosSim(article, topic);
 	}
 	
-	public double energyToLife(double energy){
-		double life=0;
+	public static double energyToLife(double energy){
 		
-		//todo: life = f(energy)
-		
-		return life;
+		return energy/(energy+1);
 	}
 	
-	public double lifeToEnergy(double life){
-		double energy=0;
+	public static double lifeToEnergy(double life){
 		
-		//todo: energy = g(life)
-		
-		return energy;
+		return life/(1-life);
 	}
 	
-	public double lifeDecay(double life){
+	public static double lifeDecay(double life){
 		
-		//todo: life = life - beta
-		
-		return life;
+		return life - GlobalParam.lifeDecay;
 		
 	}
 	
