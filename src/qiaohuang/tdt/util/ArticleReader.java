@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import qiaohuang.tdt.core.Article;
+import qiaohuang.tdt.core.Stream;
 
 /**
  * @author qiaohuang
@@ -18,16 +19,17 @@ import qiaohuang.tdt.core.Article;
  */
 public class ArticleReader {
 	
+	//单词过滤器，需要加载停用词表、噪音词表，设为静态变量只需加载一次词汇表
 	public static WordFilter wordFilter;
 	
 	public ArticleReader(){
 		wordFilter = new WordFilter();
 	}
 	
-	public void readArticleFiles(String dirPath,List<Article> articles){
+	public Stream readArticleFiles(String dirPath){
 		
 		/*
-		 * Read all news articles in a single directory
+		 * Read all news articles in a single directory as a stream
 		 * These articles have the same "Calendar" (same day) 
 		 * The algorithm's default time slot setting is ONE DAY
 		 */
@@ -45,6 +47,7 @@ public class ArticleReader {
 		 * 
 		 */
 		
+		Stream stream = new Stream();
 		
 		
 		for (File articleFile : new File(dirPath).listFiles()) {
@@ -71,7 +74,7 @@ public class ArticleReader {
 				
 				article.segmentTerms();
 				
-				articles.add(article);
+				stream.getArticles().add(article);
 
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
@@ -89,6 +92,8 @@ public class ArticleReader {
 			
 			
 		}
+		
+		return stream;
 		
 	}
 
