@@ -3,13 +3,11 @@ package qiaohuang.tdt.core;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.ansj.domain.Term;
 import org.ansj.splitWord.analysis.NlpAnalysis;
 
-import qiaohuang.tdt.util.WordFilter;
+import qiaohuang.tdt.util.ArticleReader;
 
 
 
@@ -30,31 +28,27 @@ public class Article {
 	
 
 	public Article(){
-		
+		words = new HashMap<String,WordInfo>();
 	}
 	
 	public void segmentTerms(){
 		
 		List<Term> parse = NlpAnalysis.parse(this.content);
-		for(Term token:parse){
+		for(Term token:parse){		
 			
-			String name = token.getName();			
-			Pattern p = Pattern.compile("\\s*|\t|\r|\n");
-            Matcher m = p.matcher(name);
-            name = m.replaceAll("");
-      
-            //Filter stop words, noisy words, punctuation and so on...
-            if(WordFilter.filterWord(name)) 
-            	continue;
+			//Filter stop words, noisy words, punctuation and so on...
+			String word = ArticleReader.wordFilter.filterWord(token);
+			if(word==null)
+				continue;         
             
-            if(words.containsKey(name)){
-            	WordInfo word = words.get(name);
-            	word.setTf(word.getTf()+1);
+            if(words.containsKey(word)){
+            	WordInfo wordInfo = words.get(word);
+            	wordInfo.setTf(wordInfo.getTf()+1);
             }
             else{          
-            	WordInfo word = new WordInfo(name);
-            	word.setTf(1);
-            	words.put(name,word);
+            	WordInfo wordInfo = new WordInfo(word);
+            	wordInfo.setTf(1);
+            	words.put(word,wordInfo);
             }
 		}
 		

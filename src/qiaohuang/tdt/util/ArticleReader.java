@@ -18,6 +18,11 @@ import qiaohuang.tdt.core.Article;
  */
 public class ArticleReader {
 	
+	public static WordFilter wordFilter;
+	
+	public ArticleReader(){
+		wordFilter = new WordFilter();
+	}
 	
 	public void readArticleFiles(String dirPath,List<Article> articles){
 		
@@ -39,6 +44,8 @@ public class ArticleReader {
 		 * WARNING: in my local dataset, the default encoding is GB2312
 		 * 
 		 */
+		
+		
 		
 		for (File articleFile : new File(dirPath).listFiles()) {
 			
@@ -62,6 +69,7 @@ public class ArticleReader {
 				article.setCalendar(calendar);
 				article.setContent(reader.readLine());
 				
+				article.segmentTerms();
 				
 				articles.add(article);
 
