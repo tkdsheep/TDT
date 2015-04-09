@@ -16,14 +16,14 @@ import qiaohuang.tdt.conf.PathConfig;
 public class WordFilter {
 	
 	
-	HashSet<String> stopWords;//Í£ÓÃ´Ê±í
-	HashSet<String> noiseWords;//ÔëÒô´Ê±í
+	HashSet<String> stopWords;//åœç”¨è¯è¡¨
+	HashSet<String> noiseWords;//å™ªéŸ³è¯è¡¨
 	
 	public WordFilter(){
 		stopWords = new HashSet<String>();
 		noiseWords = new HashSet<String>();
 		
-		//¶ÁÈ¡Í£ÓÃ´Ê±í
+		//è¯»å–åœç”¨è¯è¡¨
 		try{
 			BufferedReader br=new BufferedReader(new InputStreamReader(new FileInputStream(PathConfig.StopWordsDicPath),"UTF-8"));  
 			String line = null;  
@@ -38,11 +38,11 @@ public class WordFilter {
 			
 		}
 		
-		//System.out.println("Í£ÓÃ´Ê¸öÊı£º "+stopWords.size());
+		//System.out.println("åœç”¨è¯ä¸ªæ•°ï¼š "+stopWords.size());
 		
 		
 		
-		//¶ÁÈ¡ÔëÒô´Ê±í
+		//è¯»å–å™ªéŸ³è¯è¡¨
 		try{
 			BufferedReader br=new BufferedReader(new InputStreamReader(new FileInputStream(PathConfig.NoiseWordsDicPath),"UTF-8"));  
 			String line = null;  
@@ -58,21 +58,21 @@ public class WordFilter {
 		}
 		
 		//add new noise words according to certain dataset
-		//¶îÍâ¹ıÂË¡°Ä³Äê¡±¡¢¡°Ä³ÔÂ¡±¡¢¡°Ä³ÈÕ¡±ÕâÖÖĞÎÊ½µÄÔëÒô´Ê
+		//é¢å¤–è¿‡æ»¤â€œæŸå¹´â€ã€â€œæŸæœˆâ€ã€â€œæŸæ—¥â€è¿™ç§å½¢å¼çš„å™ªéŸ³è¯
 				
 		for(int i=1500;i<=2015;i++)
-			noiseWords.add(new Integer(i).toString()+"Äê");
+			noiseWords.add(new Integer(i).toString()+"ï¿½ï¿½");
 		for(int i=1;i<=12;i++)
-			noiseWords.add(new Integer(i).toString()+"ÔÂ");
+			noiseWords.add(new Integer(i).toString()+"ï¿½ï¿½");
 		for(int i=1;i<=31;i++)
-			noiseWords.add(new Integer(i).toString()+"ÈÕ");
+			noiseWords.add(new Integer(i).toString()+"ï¿½ï¿½");
 		for(int i=0;i<26;i++){
 			noiseWords.add(""+(char)('a'+i));
 			noiseWords.add(""+(char)('A'+i));
 		}
 			
 		
-		//System.out.println("ÔëÒô´Ê¸öÊı£º"+noiseWords.size());
+		//System.out.println("å™ªéŸ³è¯ä¸ªæ•°ï¼š"+noiseWords.size());
 		
 	
 	}
@@ -91,7 +91,7 @@ public class WordFilter {
 	
 	
 	public void addStopWord(String word){
-		//ÔÊĞíÊÖ¶¯Ìí¼ÓÍ£ÓÃ´Ê (ĞÂ·¢ÏÖµÄÔëÒô´ÊÒ²ÊÖ¶¯Ìí¼Óµ½ÕâÀï£©
+		//å…è®¸æ‰‹åŠ¨æ·»åŠ åœç”¨è¯ (æ–°å‘ç°çš„å™ªéŸ³è¯ä¹Ÿæ‰‹åŠ¨æ·»åŠ åˆ°è¿™é‡Œï¼‰
 		stopWords.add(word);
 	}
 	
@@ -111,7 +111,7 @@ public class WordFilter {
 			return null;
 		if(isNoiseWord(word))
 			return null;
-		if(word.length()<2)//¹ıÂË³¤¶ÈÎª0»ò1µÄ´Ê
+		if(word.length()<2)//è¿‡æ»¤é•¿åº¦ä¸º0æˆ–1çš„è¯
 			return null;		
 		
 		return word;

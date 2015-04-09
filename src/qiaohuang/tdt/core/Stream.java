@@ -6,11 +6,15 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+/**
+ * @author qiaohuang
+ *
+ */
 public class Stream {
 	
 	private ArrayList<Article> articles;//the latest article stream
 	private HashMap<String,Integer> df;//document frequency for each word
-	private HashMap<String,Double> burst;
+	private HashMap<String,Double> burst;//burstiness for each word
 	
 	public Stream(){
 		articles = new ArrayList<Article>();
@@ -20,6 +24,11 @@ public class Stream {
 	}
 	
 	public void build(){
+		
+		/*
+		 * 注意ArticleReader只负责读入文章的基本信息，不会计算wordInfo里的各项参数
+		 * 因此读完数据得到Stream之后，要记得调用这个build函数，计算wordInfo
+		 */
 		
 		this.buildDocFreq();
 		this.buildBurstiness();
@@ -126,22 +135,37 @@ public class Stream {
 	}
 	
 	private void buildTfIdf(){
-		
+
 		for(Article article:articles){
+			
+			double total=0;//for normalization
+			
 			Iterator<Entry<String, WordInfo>> iter=article.getWords().entrySet().iterator(); 
 			while(iter.hasNext()){
-				Map.Entry<String,WordInfo> entry = (Map.Entry<String,WordInfo>)iter.next();
+				Map.Entry<String, WordInfo> entry = (Map.Entry<String, WordInfo>) iter.next();
 				WordInfo wordInfo = entry.getValue();
+
+				int N = this.articles.size() + History.getSize();
+
+				double weight = wordInfo.getTf()
+						* Math.log((N + 1) / (wordInfo.getDf() + 0.5))
+						* wordInfo.getBurstiness();
 				
-				
-				int N = this.articles.size()+History.getSize();
-				
-				double weight = wordInfo.getTf()* Math.log((N+1)/(wordInfo.getDf()+0.5))*wordInfo.getBurstiness();
+				wordInfo.setWeight(weight);
+				total+=weight*weight;
+			}
+			
+			total = Math.sqrt(total);
+			
+			//normalization 单词权重值归一化
+			iter=article.getWords().entrySet().iterator(); 
+			while(iter.hasNext()){
+				Map.Entry<String, WordInfo> entry = (Map.Entry<String, WordInfo>) iter.next();
+				WordInfo wordInfo = entry.getValue();
+				wordInfo.setBurstiness(wordInfo.getBurstiness()/total);
 				
 			}
 		}
-		
-		
 	}
 
 	public ArrayList<Article> getArticles() {

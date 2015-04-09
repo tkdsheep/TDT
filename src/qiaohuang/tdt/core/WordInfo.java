@@ -10,10 +10,10 @@ public class WordInfo {
 	private int df;//document frequency (number of articles that contain this term)
 	private double burstiness,weight;
 	
-	public WordInfo(String name){
-		this.name=name;
-		this.tf=this.df=0;
-		this.burstiness=0;
+	public WordInfo(String name) {
+		this.name = name;
+		this.tf = this.df = 0;
+		this.burstiness = this.weight = 0;
 	}
 	
 	public String getName() {

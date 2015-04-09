@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
 
 import qiaohuang.tdt.core.Article;
 import qiaohuang.tdt.core.Stream;
@@ -19,7 +18,7 @@ import qiaohuang.tdt.core.Stream;
  */
 public class ArticleReader {
 	
-	//µ¥´Ê¹ıÂËÆ÷£¬ĞèÒª¼ÓÔØÍ£ÓÃ´Ê±í¡¢ÔëÒô´Ê±í£¬ÉèÎª¾²Ì¬±äÁ¿Ö»Ğè¼ÓÔØÒ»´Î´Ê»ã±í
+	//å•è¯è¿‡æ»¤å™¨ï¼Œéœ€è¦åŠ è½½åœç”¨è¯è¡¨ã€å™ªéŸ³è¯è¡¨ï¼Œè®¾ä¸ºé™æ€å˜é‡åªéœ€åŠ è½½ä¸€æ¬¡è¯æ±‡è¡¨
 	public static WordFilter wordFilter;
 	
 	public ArticleReader(){
@@ -38,10 +37,10 @@ public class ArticleReader {
 		/*
 		 * Sample news article:
 		 * 
-		 * title	ÂÀĞãÁ«½áÊø¡°¾È±â¾øÊ³¡± ËÍÒ½¿ªÊ¼ºÈÃ×ÌÀ
+		 * title	å•ç§€è²ç»“æŸâ€œæ•‘æ‰ç»é£Ÿâ€ é€åŒ»å¼€å§‹å–ç±³æ±¤
 		 * url		http://news.ifeng.com/a/20150101/42845791_0.shtml
 		 * calendar	2015-01-01 23:52:00
-		 * content	¾İ½ñÈÕĞÂÎÅÍø±¨µÀ£¬Ì¨·¨Îñ²¿½ÃÕıÊğÒòÈû³µÑÓÎó¹«ÎÄËÍ¼ş£¬ÖÂÊ¹³ÂË®±â...
+		 * content	æ®ä»Šæ—¥æ–°é—»ç½‘æŠ¥é“ï¼Œå°æ³•åŠ¡éƒ¨çŸ«æ­£ç½²å› å¡è½¦å»¶è¯¯å…¬æ–‡é€ä»¶ï¼Œè‡´ä½¿é™ˆæ°´æ‰...
 		 * 
 		 * WARNING: in my local dataset, the default encoding is GB2312
 		 * 

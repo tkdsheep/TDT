@@ -1,5 +1,9 @@
 package qiaohuang.tdt.core;
 
+/**
+ * @author qiaohuang
+ *
+ */
 public class TDTModel {
 	
 	

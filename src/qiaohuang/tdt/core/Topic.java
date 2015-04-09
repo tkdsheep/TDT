@@ -32,6 +32,11 @@ public class Topic {
 	
 	public void Update(Article article){
 		
+		/*
+		 * 有新的文章加入这个话题，需要更新话题的wordVector和生命值life		 * 
+		 */
+		
+		//更新wordVector
 		Iterator<Entry<String, WordInfo>> it=article.getWords().entrySet().iterator(); 
 		while(it.hasNext()){
 			Map.Entry<String,WordInfo> entry = (Map.Entry<String,WordInfo>)it.next();
@@ -41,13 +46,13 @@ public class Topic {
 			if(wordVector.containsKey(word))
 				wordVector.put(word, (wordVector.get(word)*articles.size()+weight)/(articles.size()+1));
 			else wordVector.put(word, weight/(articles.size()+1));
-			
-			
-			
-		}
-		
-		
+		}		
 		articles.add(article);
+		
+		//更新life
+		double energy = EnergyFunction.lifeToEnergy(life);
+		energy += EnergyFunction.getEnergy(article, this);
+		life = EnergyFunction.energyToLife(energy);
 	}
 
 

@@ -14,8 +14,7 @@ import qiaohuang.tdt.util.ArticleReader;
 
 
 /**
- * @author qiaohuang
- * 
+ * @author qiaohuang 
  *
  */
 

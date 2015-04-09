@@ -6,6 +6,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+/**
+ * @author qiaohuang
+ *
+ */
 public class History {
 	
 	private static int size;
