@@ -18,8 +18,9 @@ import qiaohuang.tdt.core.Stream;
  */
 public class ArticleReader {
 	
-	//å•è¯è¿‡æ»¤å™¨ï¼Œéœ€è¦åŠ è½½åœç”¨è¯è¡¨ã€å™ªéŸ³è¯è¡¨ï¼Œè®¾ä¸ºé™æ€å˜é‡åªéœ€åŠ è½½ä¸€æ¬¡è¯æ±‡è¡¨
+	//"static" so that the stopword.dic and noiseword.dic only need to be loaded once
 	public static WordFilter wordFilter;
+	
 	
 	public ArticleReader(){
 		wordFilter = new WordFilter();
@@ -37,10 +38,10 @@ public class ArticleReader {
 		/*
 		 * Sample news article:
 		 * 
-		 * title	å•ç§€è²ç»“æŸâ€œæ•‘æ‰ç»é£Ÿâ€ é€åŒ»å¼€å§‹å–ç±³æ±¤
+		 * title	ÂÀĞãÁ«½áÊø¡°¾È±â¾øÊ³¡± ËÍÒ½¿ªÊ¼ºÈÃ×ÌÀ
 		 * url		http://news.ifeng.com/a/20150101/42845791_0.shtml
 		 * calendar	2015-01-01 23:52:00
-		 * content	æ®ä»Šæ—¥æ–°é—»ç½‘æŠ¥é“ï¼Œå°æ³•åŠ¡éƒ¨çŸ«æ­£ç½²å› å¡è½¦å»¶è¯¯å…¬æ–‡é€ä»¶ï¼Œè‡´ä½¿é™ˆæ°´æ‰...
+		 * content	¾İ½ñÈÕĞÂÎÅÍø±¨µÀ£¬Ì¨·¨Îñ²¿½ÃÕıÊğÒòÈû³µÑÓÎó¹«ÎÄËÍ¼ş£¬ÖÂÊ¹³ÂË®±â...
 		 * 
 		 * WARNING: in my local dataset, the default encoding is GB2312
 		 * 
@@ -71,6 +72,10 @@ public class ArticleReader {
 				article.setCalendar(calendar);
 				article.setContent(reader.readLine());
 				
+				//empty content, no use
+				if(article.getContent()==null)
+					continue;
+				
 				article.segmentTerms();
 				
 				stream.getArticles().add(article);
@@ -91,6 +96,8 @@ public class ArticleReader {
 			
 			
 		}
+		
+		stream.build();
 		
 		return stream;
 		

@@ -26,8 +26,8 @@ public class Stream {
 	public void build(){
 		
 		/*
-		 * 注意ArticleReader只负责读入文章的基本信息，不会计算wordInfo里的各项参数
-		 * 因此读完数据得到Stream之后，要记得调用这个build函数，计算wordInfo
+		 * ArticleReader only "read" basic information of an article (title, content and so on)
+		 * After reading, remember to call this function to calculate values of parameters for each word
 		 */
 		
 		this.buildDocFreq();
@@ -38,7 +38,7 @@ public class Stream {
 	
 	private void buildDocFreq(){
 		
-		//统计当前新闻数据流中每个词语的df值（文档频率）
+		//calculate document frequency for each word in this stream
 		for(Article article:articles){
 			
 			Iterator<Entry<String, WordInfo>> it=article.getWords().entrySet().iterator(); 
@@ -54,19 +54,25 @@ public class Stream {
 		}
 		
 		/*
-		 * 加上历史的df值，参考paper里的公式：df(w,i) = df(w,i-1) + df(w,si)
-		 * df(w,i-1)是历史数据集里w的df值，df(w,si)是当前数据流中w的df值
+		 * Refer to the formula in the paper (CIKM'08)
+		 * 
+		 * df(w,i) = df(w,i-1) + df(w,si)
+		 * 
+		 * df(w,i-1)is the df value for each word w in history data
+		 * df(w,si) is the df value for each word w in this new stream
+		 * df(w,i) is the final df value for each word w
+		 * 
 		 */
 		Iterator<Entry<String, Integer>> it=df.entrySet().iterator();
-		while(it.hasNext()){
+		while(it.hasNext()){//for each word in this stream
 			Map.Entry<String,Integer> entry = (Map.Entry<String,Integer>)it.next();
 			String word = entry.getKey();
 			Integer count = History.getDf().get(word);
 			
 			if(count==null)
-				continue;//历史数据集没有出现过这个词
+				continue;//this word didn't appear in history
 			
-			entry.setValue(entry.getValue()+count);//更新df
+			entry.setValue(entry.getValue()+count);//update df of this word
 		}
 		
 		
@@ -87,7 +93,8 @@ public class Stream {
 		
 		
 		/*
-		 * 参照paper里的公式
+		 * Refer to the formula in the paper (CIKM'08)
+		 * 
 		 * 		i	i'
 		 * 	w	A	B
 		 * 	w'	C	D
@@ -99,7 +106,7 @@ public class Stream {
 		 * 
 		 */	
 		
-		//统一计算数据流中所有词的burstiness
+		//calculate burstiness for each word in this stream
 		double A, B, C, D;
 		Iterator<Entry<String, Integer>> it = df.entrySet().iterator();
 		while (it.hasNext()) {
@@ -113,14 +120,18 @@ public class Stream {
 			else
 				B = 0;
 			C = this.articles.size() - A;
-			D = History.getSize() - B;
+			D = History.getSize() - B;	
 			
 			double burstiness = (A+B+C+D)*(A*D-B*C)*(A*D-B*C) / ((A+B)*(C+D)*(A+C)*(B+D));
 			burst.put(word, burstiness);
 			
+			//debug
+			//if(word.equals("������"))
+				//System.out.println(A+" "+B+" "+C+" "+D+" "+burstiness);
+			
 		}
 		
-		//更新每篇文章的wordInfo
+		//update wordInfo of each word in each article
 		for(Article article:articles){
 			Iterator<Entry<String, WordInfo>> iter=article.getWords().entrySet().iterator(); 
 			while(iter.hasNext()){
@@ -138,7 +149,7 @@ public class Stream {
 
 		for(Article article:articles){
 			
-			double total=0;//for normalization
+			double total=0;//prepared for normalization
 			
 			Iterator<Entry<String, WordInfo>> iter=article.getWords().entrySet().iterator(); 
 			while(iter.hasNext()){
@@ -157,13 +168,12 @@ public class Stream {
 			
 			total = Math.sqrt(total);
 			
-			//normalization 单词权重值归一化
+			//normalization
 			iter=article.getWords().entrySet().iterator(); 
 			while(iter.hasNext()){
 				Map.Entry<String, WordInfo> entry = (Map.Entry<String, WordInfo>) iter.next();
 				WordInfo wordInfo = entry.getValue();
-				wordInfo.setBurstiness(wordInfo.getBurstiness()/total);
-				
+				wordInfo.setWeight(wordInfo.getWeight()/total);		
 			}
 		}
 	}

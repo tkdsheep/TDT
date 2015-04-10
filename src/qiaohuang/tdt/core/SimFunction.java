@@ -12,6 +12,8 @@ import java.util.Map.Entry;
 
 public class SimFunction {
 	
+	
+	//cosine similarity between two articles
 	public static double cosSim(Article a, Article b){
 		
 		double dist=0;
@@ -30,6 +32,8 @@ public class SimFunction {
 		return dist;
 	}
 	
+	
+	//cosine similarity between article and topic
 	public static double cosSim(Article a,Topic b){
 		double dist = 0;
 		

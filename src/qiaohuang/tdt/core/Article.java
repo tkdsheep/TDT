@@ -32,24 +32,33 @@ public class Article {
 	
 	public void segmentTerms(){
 		
-		List<Term> parse = NlpAnalysis.parse(this.content);
-		for(Term token:parse){		
-			
-			//Filter stop words, noisy words, punctuation and so on...
-			String word = ArticleReader.wordFilter.filterWord(token);
-			if(word==null)
-				continue;         
-            
-            if(words.containsKey(word)){
-            	WordInfo wordInfo = words.get(word);
-            	wordInfo.setTf(wordInfo.getTf()+1);
-            }
-            else{          
-            	WordInfo wordInfo = new WordInfo(word);
-            	wordInfo.setTf(1);
-            	words.put(word,wordInfo);
-            }
+		try{
+			List<Term> parse = NlpAnalysis.parse(this.content);
+			for(Term token:parse){		
+				
+				//Filter stop words, noisy words, punctuation and so on...
+				String word = ArticleReader.wordFilter.filterWord(token);
+				if(word==null)
+					continue;         
+	            
+	            if(words.containsKey(word)){
+	            	WordInfo wordInfo = words.get(word);
+	            	wordInfo.setTf(wordInfo.getTf()+1);
+	            }
+	            else{          
+	            	WordInfo wordInfo = new WordInfo(word);
+	            	wordInfo.setTf(1);
+	            	words.put(word,wordInfo);
+	            }
+			}
 		}
+		catch (Exception e){
+			System.out.println("illegal article! segmentation failed!");
+			System.out.println("title: "+this.title);
+			System.out.println("content: "+this.content);
+			
+		}
+		
 		
 	}
 

@@ -22,8 +22,6 @@ public class WordFilter {
 	public WordFilter(){
 		stopWords = new HashSet<String>();
 		noiseWords = new HashSet<String>();
-		
-		//读取停用词表
 		try{
 			BufferedReader br=new BufferedReader(new InputStreamReader(new FileInputStream(PathConfig.StopWordsDicPath),"UTF-8"));  
 			String line = null;  
@@ -38,11 +36,22 @@ public class WordFilter {
 			
 		}
 		
-		//System.out.println("停用词个数： "+stopWords.size());
+		System.out.println("ͣ�ôʸ����� "+stopWords.size());
+		
+		//add new noise words according to certain dataset
 		
 		
+		for(int i=1500;i<=2015;i++)
+			noiseWords.add(new Integer(i).toString()+"��");
+		for(int i=1;i<=12;i++)
+			noiseWords.add(new Integer(i).toString()+"��");
+		for(int i=1;i<=31;i++)
+			noiseWords.add(new Integer(i).toString()+"��");
+		for(int i=0;i<26;i++){
+			noiseWords.add(""+(char)('a'+i));
+			noiseWords.add(""+(char)('A'+i));
+		}
 		
-		//读取噪音词表
 		try{
 			BufferedReader br=new BufferedReader(new InputStreamReader(new FileInputStream(PathConfig.NoiseWordsDicPath),"UTF-8"));  
 			String line = null;  
@@ -57,22 +66,9 @@ public class WordFilter {
 			
 		}
 		
-		//add new noise words according to certain dataset
-		//额外过滤“某年”、“某月”、“某日”这种形式的噪音词
-				
-		for(int i=1500;i<=2015;i++)
-			noiseWords.add(new Integer(i).toString()+"��");
-		for(int i=1;i<=12;i++)
-			noiseWords.add(new Integer(i).toString()+"��");
-		for(int i=1;i<=31;i++)
-			noiseWords.add(new Integer(i).toString()+"��");
-		for(int i=0;i<26;i++){
-			noiseWords.add(""+(char)('a'+i));
-			noiseWords.add(""+(char)('A'+i));
-		}
-			
 		
-		//System.out.println("噪音词个数："+noiseWords.size());
+		
+		System.out.println("�����ʸ�����"+noiseWords.size());
 		
 	
 	}
@@ -89,9 +85,13 @@ public class WordFilter {
 		return false;	
 	}	
 	
+	private static boolean isNumeric(String str) {
+		Pattern pattern = Pattern.compile("[0-9]*");
+		return pattern.matcher(str).matches();
+	}
+	
 	
 	public void addStopWord(String word){
-		//允许手动添加停用词 (新发现的噪音词也手动添加到这里）
 		stopWords.add(word);
 	}
 	
@@ -107,12 +107,17 @@ public class WordFilter {
         Matcher m = p.matcher(word);
         word = m.replaceAll("");
 		
+        if(word.length()<2)
+			return null;
+        if(isNumeric(word))
+			return null;
 		if(isStopWord(word))
 			return null;
 		if(isNoiseWord(word))
 			return null;
-		if(word.length()<2)//过滤长度为0或1的词
-			return null;		
+		
+		
+		
 		
 		return word;
 	}

@@ -1,6 +1,7 @@
 package qiaohuang.tdt.core;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -22,21 +23,33 @@ public class Topic {
 	 */
 	private HashMap<String,Double> wordVector; 
 	
-	private double life;//话题的“生命值”，也可以理解为话题的“热度”
+	private double life;//topic life, can be treated as "hotness"
 	
-	public Topic(){
+	public Topic(Article article){
+		
+		//the param "article" is the first article detected for this new topic
+		
 		articles = new ArrayList<Article>();
 		wordVector = new HashMap<String,Double>();
-		life=0;
+		life=0.1;
+		
+		Iterator<Entry<String, WordInfo>> it=article.getWords().entrySet().iterator(); 
+		while(it.hasNext()){
+			Map.Entry<String,WordInfo> entry = (Map.Entry<String,WordInfo>)it.next();
+			wordVector.put(entry.getKey(), entry.getValue().getWeight());
+		}
+		
 	}
 	
 	public void Update(Article article){
 		
 		/*
-		 * 有新的文章加入这个话题，需要更新话题的wordVector和生命值life		 * 
+		 * merge new article into this topic
+		 * need to update wordVector and topic life
+		 *  
 		 */
 		
-		//更新wordVector
+		//update wordVector
 		Iterator<Entry<String, WordInfo>> it=article.getWords().entrySet().iterator(); 
 		while(it.hasNext()){
 			Map.Entry<String,WordInfo> entry = (Map.Entry<String,WordInfo>)it.next();
@@ -49,11 +62,24 @@ public class Topic {
 		}		
 		articles.add(article);
 		
-		//更新life
+		//update life
 		double energy = EnergyFunction.lifeToEnergy(life);
 		energy += EnergyFunction.getEnergy(article, this);
 		life = EnergyFunction.energyToLife(energy);
 	}
+	
+	public void printInfo(Calendar calendar){
+		
+		System.out.println("topic life: "+this.life);
+		System.out.println("topic size: "+this.articles.size());
+		for(Article article:this.articles){
+			if(article.getCalendar().DAY_OF_YEAR==calendar.DAY_OF_YEAR)
+			System.out.println(article.getTitle());
+		}
+		
+	}
+	
+	
 
 
 
@@ -64,6 +90,14 @@ public class Topic {
 
 	public HashMap<String, Double> getWordVector() {
 		return wordVector;
+	}
+
+	public double getLife() {
+		return life;
+	}
+
+	public void setLife(double life) {
+		this.life = life;
 	}
 
 

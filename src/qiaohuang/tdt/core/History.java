@@ -1,6 +1,5 @@
 package qiaohuang.tdt.core;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -12,20 +11,17 @@ import java.util.Map.Entry;
  */
 public class History {
 	
-	private static int size;
-	private ArrayList<Article> articles;//the articles in the past
+	private static int size;//number of articles in the past
 	private static HashMap<String,Integer> df;//document frequency for each word in the past
 	
 	public History(){
 		size=0;
-		articles = new ArrayList<Article>();
 		df = new HashMap<String,Integer>();
 	}
 	
 	public void updateHistory(Stream stream){
 		size+=stream.getArticles().size();
 		for(Article article:stream.getArticles()){
-			articles.add(article);
 			
 			Iterator<Entry<String, WordInfo>> it=article.getWords().entrySet().iterator(); 
 			while(it.hasNext()){
@@ -39,9 +35,6 @@ public class History {
 		}		
 	}
 
-	public ArrayList<Article> getArticles() {
-		return articles;
-	}
 
 	public static HashMap<String, Integer> getDf() {
 		return df;
