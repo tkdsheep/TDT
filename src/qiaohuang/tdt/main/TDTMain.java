@@ -1,6 +1,7 @@
 package qiaohuang.tdt.main;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 
 import qiaohuang.tdt.core.History;
@@ -16,7 +17,7 @@ import qiaohuang.tdt.util.ArticleReader;
 public class TDTMain {
 	
 	
-	public static void main(String args[]){
+	public static void main(String args[])throws IOException{
 		
 		
 		String rootPath = "F:/data/IFENG_Dec";
@@ -30,13 +31,10 @@ public class TDTMain {
 			int day = Integer.parseInt(docFile.getName());
 			
 			if(day>=20131201&&day<=20131207){
-				System.out.println(docFile.getAbsolutePath());
+				System.out.println("reading and processing "+docFile.getAbsolutePath());
 				
 				//read a new article stream
 				Stream stream = articleReader.readArticleFiles(docFile.getAbsolutePath());
-				System.out.println("stream article size: "+stream.getArticles().size());
-				System.out.println("stream word size: "+stream.getDf().size());
-				
 				
 				//call TDT algorithm model, tracking and detecting topics
 				model.process(history, topics, stream);		

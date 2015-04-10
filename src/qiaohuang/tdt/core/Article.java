@@ -23,7 +23,8 @@ public class Article {
 	private String title, content, url, source;// source may be null
 	private Calendar calendar;
 	private HashMap<String,WordInfo> words;
-	
+	private Topic relatedTopic;//the topic this article related/belong to
+	private double sim;//similarity between this article and its related topic
 	
 
 	public Article(){
@@ -108,6 +109,23 @@ public class Article {
 		return words;
 	}
 
+	public Topic getRelatedTopic() {
+		return relatedTopic;
+	}
+
+	public void setRelatedTopic(Topic relatedTopic) {
+		this.relatedTopic = relatedTopic;
+	}
+
+	public double getSim() {
+		return sim;
+	}
+
+	public void setSim(double sim) {
+		this.sim = sim;
+	}
+
+	
 
 	
 	
