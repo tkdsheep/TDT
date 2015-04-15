@@ -1,5 +1,6 @@
 package qiaohuang.tdt.core;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -23,12 +24,13 @@ public class Article {
 	private String title, content, url, source;// source may be null
 	private Calendar calendar;
 	private HashMap<String,WordInfo> words;
-	private Topic relatedTopic;//the topic this article related/belong to
+	private ArrayList<String> wordList;
 	private double sim;//similarity between this article and its related topic
 	
 
 	public Article(){
 		words = new HashMap<String,WordInfo>();
+		wordList = new ArrayList<String>();
 	}
 	
 	public void segmentTerms(){
@@ -42,6 +44,7 @@ public class Article {
 				if(word==null)
 					continue;         
 	            
+				//update term frequency
 	            if(words.containsKey(word)){
 	            	WordInfo wordInfo = words.get(word);
 	            	wordInfo.setTf(wordInfo.getTf()+1);
@@ -50,6 +53,7 @@ public class Article {
 	            	WordInfo wordInfo = new WordInfo(word);
 	            	wordInfo.setTf(1);
 	            	words.put(word,wordInfo);
+	            	wordList.add(word);
 	            }
 			}
 		}
@@ -109,12 +113,8 @@ public class Article {
 		return words;
 	}
 
-	public Topic getRelatedTopic() {
-		return relatedTopic;
-	}
-
-	public void setRelatedTopic(Topic relatedTopic) {
-		this.relatedTopic = relatedTopic;
+	public ArrayList<String> getWordList() {
+		return wordList;
 	}
 
 	public double getSim() {

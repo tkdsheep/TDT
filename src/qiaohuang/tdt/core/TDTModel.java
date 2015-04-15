@@ -5,7 +5,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.LinkedList;
 
@@ -26,38 +25,32 @@ public class TDTModel {
 	}
 			
 	
-	public void process (History history,LinkedList<Topic> topics,Stream stream)throws IOException{
+	public void process (History history,LinkedList<Topic> topics,Stream stream,ArrayList<Topic> deletedTopics)throws IOException{
 		
-		Integer newTopicId = 1;
+		LdaModel lda = new LdaModel(stream.getArticles().size()/15,100);//TODO should be global param
+		ArrayList<Topic> newTopics = lda.run(stream);
 		
-		for(Article article:stream.getArticles()){
+		
+		for(Topic newTopic:newTopics){
+			
 			double maxSim = 0;
 			Topic relatedTopic = null;
-			for(Topic topic:topics){
-				double sim = SimFunction.cosSim(article, topic);
-				if(sim > maxSim){
+			for(Topic oldTopic:topics){
+				double sim = SimFunction.cosSim(newTopic,oldTopic);
+				if (sim >= GlobalParam.simThreshold && sim > maxSim) {
 					maxSim = sim;
-					relatedTopic = topic;
+					relatedTopic = oldTopic;
 				}
-			}
-			if(maxSim>=GlobalParam.simThreshold){//this article belongs to an existing topic
-				relatedTopic.Update(article);
-				article.setSim(maxSim);
-			}
-			else{//here we find a new topic!
-				
-				Integer tmp = article.getCalendar().get(Calendar.YEAR)*10000
-						+article.getCalendar().get(Calendar.MONTH+1)*100
-						+article.getCalendar().get(Calendar.DAY_OF_MONTH);
-				System.out.println(tmp);
-				String topicId = tmp.toString()+newTopicId.toString();
-				newTopicId++;
-				relatedTopic = new Topic(article,topicId);
-				topics.add(relatedTopic);
-				article.setSim(1);
-			}
-			article.setRelatedTopic(relatedTopic);
+			}		
 			
+			//this new topic has similar old topic, need to merge them
+			if(relatedTopic!=null){
+				relatedTopic.Update(newTopic);
+			}
+			else{
+				//this is a real new topic!
+				topics.add(newTopic);	
+			}	
 		}
 		
 		writer.write("\n---------------------------------\n\r\n");
@@ -67,6 +60,8 @@ public class TDTModel {
 		
 		writer.write("number of topics: "+topics.size()+"\r\n");
 		
+		for(Topic topic:topics)
+			topic.record(stream.getArticles().get(0).getCalendar());
 		printTopics(topics);	
 		
 		//process done
@@ -79,14 +74,18 @@ public class TDTModel {
 		for(Topic topic:topics){
 			topic.getNewArticles().clear();
 			topic.setLife(EnergyFunction.lifeDecay(topic.getLife()));//life decay
-			if(topic.getLife()<GlobalParam.lifeDecay)//topic "die"
+			if(topic.getLife()<0)//topic "die"
 				deleteList.add(topic);
 		}
 		for(Topic topic:deleteList){
+			deletedTopics.add(topic);
 			topics.remove(topic);
 		}
 		
 		writer.write("after decay, number of topics: "+topics.size()+"\r\n");
+		
+		//very important!!!
+		writer.flush();
 		
 	}
 	
@@ -94,8 +93,9 @@ public class TDTModel {
 		
 		Collections.sort(topics, new TopicComparator());
 		for(Topic topic:topics){
-			if(topic.getNewArticles().size()>=30)
-			topic.printInfo();
+			if(topic.getNewArticles().size()>0)//TODO should be a global param
+				if(topic.getLife()>0.7||topic.getLife()/topic.getNewArticles().size()>0.4)
+					topic.printInfo();
 		}
 		
 	}

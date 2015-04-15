@@ -16,8 +16,8 @@ import qiaohuang.tdt.conf.PathConfig;
 public class WordFilter {
 	
 	
-	HashSet<String> stopWords;//停用词表
-	HashSet<String> noiseWords;//噪音词表
+	private HashSet<String> stopWords;
+	private HashSet<String> noiseWords;
 	
 	public WordFilter(){
 		stopWords = new HashSet<String>();

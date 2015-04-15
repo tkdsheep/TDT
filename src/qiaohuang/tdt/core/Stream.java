@@ -101,8 +101,8 @@ public class Stream {
 		 * 
 		 * A is the count of stories that contain term w in time slot i;
 		 * B is the count of stories that contain term w outside time slot i;
-		 * C is the count of stories that don’t contain term w in time slot i;
-		 * D is the count of stories that don’t contain term w outside time slot i.
+		 * C is the count of stories that don't contain term w in time slot i;
+		 * D is the count of stories that don't contain term w outside time slot i.
 		 * 
 		 */	
 		
