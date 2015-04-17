@@ -213,6 +213,7 @@ public class LdaModel {
 				if(relatedTopic[j]==i){//this article belongs to this topic
 					//add this article to topic
 					topic.insertArticle(stream.getArticles().get(j));
+					stream.getArticles().get(j).setSim(theta[j][i]);
 					//System.out.println(stream.getArticles().get(j).getTitle());
 				}			
 			}
@@ -222,7 +223,7 @@ public class LdaModel {
 			
 			if(!topic.getArticles().isEmpty()){
 				
-				topic.updateWordVector();
+				//topic.updateWordVector();
 				
 				//TODO the paper use alpha param
 				double energy = 0;

@@ -45,7 +45,7 @@ public class TDTModel {
 			
 			//this new topic has similar old topic, need to merge them
 			if(relatedTopic!=null){
-				relatedTopic.Update(newTopic);
+				relatedTopic.merge(newTopic);
 			}
 			else{
 				//this is a real new topic!
@@ -68,6 +68,10 @@ public class TDTModel {
 		
 		//update history
 		history.updateHistory(stream);
+		
+		/*for(Topic topic:topics){
+			topic.deleteArticles(stream.getArticles().get(0).getCalendar());
+		}*/
 		
 		//topic decay and clear topic's "newArticle" list
 		ArrayList<Topic> deleteList = new ArrayList<Topic>();
@@ -94,8 +98,8 @@ public class TDTModel {
 		Collections.sort(topics, new TopicComparator());
 		for(Topic topic:topics){
 			if(topic.getNewArticles().size()>0)//TODO should be a global param
-				if(topic.getLife()>0.7||topic.getLife()/topic.getNewArticles().size()>0.4)
-					topic.printInfo();
+				if(topic.getLife()>0.6)
+					topic.printCurrentInfo();
 		}
 		
 	}

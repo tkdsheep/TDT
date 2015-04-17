@@ -37,6 +37,8 @@ public class SimFunction {
 	public static double cosSim(Article a,Topic b){
 		double sim = 0;
 		
+		//TODO change getWordVector to /size
+		
 		Iterator<Entry<String, WordInfo>> it=a.getWords().entrySet().iterator(); 
 		while(it.hasNext()){
 			Map.Entry<String,WordInfo> entry = (Map.Entry<String,WordInfo>)it.next();
@@ -44,7 +46,7 @@ public class SimFunction {
 			if (!b.getWordVector().containsKey(word))
 				continue;
 			double aweight = entry.getValue().getWeight();
-			double bweight = b.getWordVector().get(word);
+			double bweight = b.getWordVector().get(word)/b.getArticles().size();
 			sim += aweight * bweight;
 		}
 		
@@ -55,15 +57,15 @@ public class SimFunction {
 	//cosine similartiy between two topic
 	public static double cosSim(Topic a,Topic b){
 		double sim=0;
-		
+		//TODO change getWordVector to /size
 		Iterator<Entry<String, Double>> it=a.getWordVector().entrySet().iterator(); 
 		while(it.hasNext()){
 			Map.Entry<String,Double> entry = (Map.Entry<String,Double>)it.next();
 			String word = entry.getKey();
 			if (!b.getWordVector().containsKey(word))
 				continue;
-			double aweight = entry.getValue();
-			double bweight = b.getWordVector().get(word);
+			double aweight = entry.getValue()/a.getArticles().size();
+			double bweight = b.getWordVector().get(word)/b.getArticles().size();
 			sim += aweight * bweight;
 			
 		}

@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import qiaohuang.tdt.core.Article;
@@ -72,8 +73,8 @@ public class ArticleReader {
 				article.setCalendar(calendar);
 				article.setContent(reader.readLine());
 				
-				//empty content, no use
-				if(article.getContent()==null)
+				//empty content or empty title, no use
+				if(article.getContent()==null||article.getTitle()==null)
 					continue;
 				
 				article.segmentTerms();
@@ -103,4 +104,35 @@ public class ArticleReader {
 		
 	}
 
+	
+	public Stream readArticleFromDB(String sql){
+		Stream stream = new Stream();
+		
+		ArrayList<DBFile> list= DBConnection.resultResultQuery(sql);
+		for(DBFile file:list){
+			Article article = new Article();
+			
+			if(file.getContent()==null||file.getTitle()==null)
+				continue;
+			
+			article.setContent(file.getContent());
+			
+			article.setTitle(file.getTitle());
+			
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(file.getTimeDate());
+			article.setCalendar(calendar);
+			
+			
+			
+			article.segmentTerms();
+			stream.getArticles().add(article);
+		}
+		
+		
+		stream.build();
+		
+		
+		return stream;
+	}
 }

@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.LinkedList;
 import java.util.Map.Entry;
 
 import qiaohuang.tdt.conf.GlobalParam;
@@ -24,7 +22,7 @@ import qiaohuang.tdt.util.TraverseMap;
 public class Topic {
 	
 	private String topicId;
-	private ArrayList<Article> articles;
+	private LinkedList<Article> articles;
 	private ArrayList<Article> newArticles;
 	private boolean isNoiseTopic;
 	
@@ -52,7 +50,7 @@ public class Topic {
 	private double life;//topic life, can be treated as "hotness"
 	
 	public Topic(String id){
-		articles = new ArrayList<Article>();
+		articles = new LinkedList<Article>();
 		newArticles = new ArrayList<Article>();
 		wordVector = new HashMap<String,Double>();
 		historyState = new ArrayList<State>();
@@ -61,49 +59,67 @@ public class Topic {
 		isNoiseTopic = true;//default setting is noise topic
 	}
 	
-	public void Update(Topic topic){
+	public void merge(Topic topic){
 		/*
 		 * merge two topics
 		 * need to update wordVector and topic life
 		 */
 		
 		double energy = EnergyFunction.lifeToEnergy(this.life);
-		
-		for(Article article:topic.getArticles()){
-			insertArticle(article);
-			article.setSim(SimFunction.cosSim(article,this));
-			energy+=GlobalParam.tdtAlpha*article.getSim();//TODO the paper uses alpha param
-		}
+		for(Article article:topic.getArticles())
+			energy+=GlobalParam.tdtAlpha*article.getSim();
 		
 		//update topic life
 		this.life = EnergyFunction.energyToLife(energy);
 		
+		for(Article article:topic.getArticles()){
+			insertArticle(article);
+			//article.setSim(SimFunction.cosSim(article,this));
+			
+		}
+		
+		
+		
 		//update wordVector
-		updateWordVector();
+		//updateWordVector();
 
 	}
 	
 	public void insertArticle(Article article){
 		articles.add(article);
 		newArticles.add(article);
+		
+		//update wordVector
+		for(Entry<String,WordInfo> entry:TraverseMap.traverseWordInfo(article.getWords())){
+			String word = entry.getKey();
+			if(wordVector.containsKey(word))
+				wordVector.put(word, wordVector.get(word)+entry.getValue().getWeight());
+			else wordVector.put(word, entry.getValue().getWeight());
+		}		
+		
 	}
 	
-	public void updateWordVector(){
+	public void deleteArticles(Calendar calendar){
 		
-		wordVector.clear();
-		for(Article article:articles){
+		int currentDay = calendar.get(Calendar.DAY_OF_YEAR);
+		
+		ArrayList<Article> deleteList = new ArrayList<Article>();
+		for(Article article:newArticles){
+			
+			int day = article.getCalendar().get(Calendar.DAY_OF_YEAR);
+			if(currentDay-day<7)//TODO: should be global param
+				break;
+			deleteList.add(article);
+		}
+		for(Article article:deleteList){
+			articles.remove(article);
+			
+			//update wordVector
 			for(Entry<String,WordInfo> entry:TraverseMap.traverseWordInfo(article.getWords())){
 				String word = entry.getKey();
-				if(wordVector.containsKey(word))
-					wordVector.put(word, wordVector.get(word)+entry.getValue().getWeight());
-				else wordVector.put(word, entry.getValue().getWeight());
-			}
+				wordVector.put(word, wordVector.get(word)-entry.getValue().getWeight());
+			}	
 		}
-		
-		for(Entry<String,Double> entry:TraverseMap.traverseDouble(wordVector)){
-			wordVector.put(entry.getKey(), wordVector.get(entry.getKey())/articles.size());
-		}
-		
 	}
 	
 	public void record(Calendar calendar){
@@ -139,37 +155,13 @@ public class Topic {
 		TDTModel.writer.newLine();
 	}
 	
-	public void printInfo() throws IOException {
+	public void printCurrentInfo() throws IOException {
 
 		TDTModel.writer.write("topic id: " + this.topicId);
 		TDTModel.writer.newLine();
 		TDTModel.writer.write("topic life: " + this.life);
 		TDTModel.writer.newLine();
 		TDTModel.writer.write("topic size: " + this.articles.size());
-		TDTModel.writer.newLine();
-		
-		//print top 20 words
-		int c=20;
-		HashSet<String> set = new HashSet<String>();
-		while(c-->0){
-			double maxWeight = 0;
-			String word = null;
-			Iterator<Entry<String, Double>> it = wordVector.entrySet().iterator();
-			while(it.hasNext()){
-				Map.Entry<String,Double> entry = (Map.Entry<String,Double>)it.next();
-				if(set.contains(entry.getKey()))
-					continue;
-				if(entry.getValue()>maxWeight){
-					maxWeight = entry.getValue();
-					word=entry.getKey();
-				}
-				
-			}
-			set.add(word);
-			
-		}
-		for(String word:set)
-			TDTModel.writer.write(word+" ");
 		TDTModel.writer.newLine();
 
 		// print top 25 related articles
@@ -187,7 +179,7 @@ public class Topic {
 
 
 
-	public ArrayList<Article> getArticles() {
+	public LinkedList<Article> getArticles() {
 		return articles;
 	}
 
@@ -217,6 +209,24 @@ public class Topic {
 	
 
 
+	/*
+	public void updateWordVector(){
+		
+		wordVector.clear();
+		for(Article article:articles){
+			for(Entry<String,WordInfo> entry:TraverseMap.traverseWordInfo(article.getWords())){
+				String word = entry.getKey();
+				if(wordVector.containsKey(word))
+					wordVector.put(word, wordVector.get(word)+entry.getValue().getWeight());
+				else wordVector.put(word, entry.getValue().getWeight());
+			}
+		}
+		
+		for(Entry<String,Double> entry:TraverseMap.traverseDouble(wordVector)){
+			wordVector.put(entry.getKey(), wordVector.get(entry.getKey())/articles.size());
+		}
+		
+	}*/
 
 	
 
