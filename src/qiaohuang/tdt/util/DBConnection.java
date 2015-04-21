@@ -46,10 +46,8 @@ public class DBConnection {
 	      while (rs.next()) {
 	        DBFile temp =new DBFile();
 	        temp.setTitle(rs.getString("title"));
-	        temp.setUrl("null");
 	        temp.setTimeDate(rs.getDate("create_time"));
 	        temp.setContent(replaceAll(rs.getString("content")));
-	        temp.setSource("null");
 	        list.add(temp);
 	      }
 	      st.close();
@@ -79,7 +77,7 @@ public class DBConnection {
 	    
 		//for debug
 		
-		String sql= "select title,content,create_time from`htnewsroom`.`article` where create_time between '2015-04-06' and '2015-04-12'";
+		String sql= "select title,content,create_time,site,category from`htnewsroom`.`article` where create_time between '2015-04-06' and '2015-04-12'";
 		ArrayList<DBFile> test = resultResultQuery(sql);
 
 	    int i =0;

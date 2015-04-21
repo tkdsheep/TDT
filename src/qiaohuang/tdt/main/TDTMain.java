@@ -30,7 +30,7 @@ public class TDTMain {
 		History history = new History();
 		for (File docFile : new File(fileRootPath).listFiles()) {
 			int day = Integer.parseInt(docFile.getName());
-			if(day>=20131001&&day<=20131010){
+			if(day>=20131001&&day<=20131030){
 				System.out.println("reading and processing "+docFile.getAbsolutePath());
 				Stream stream = articleReader.readArticleFiles(docFile.getAbsolutePath());
 				history.updateHistory(stream);
@@ -44,7 +44,7 @@ public class TDTMain {
 		fileRootPath = "F:/data/IFENG_Dec";
 		LinkedList<Topic> topics = new LinkedList<Topic>();
 		ArrayList<Topic> deletedTopics = new ArrayList<Topic>();
-		TDTModel model = new TDTModel();
+		TDTModel model = new TDTModel("IFENG_Result.txt");
 		
 		for (File docFile : new File(fileRootPath).listFiles()) {
 			
@@ -65,12 +65,12 @@ public class TDTMain {
 		
 		for(Topic topic:deletedTopics){
 			if(!topic.isNoiseTopic())
-				topic.printHistory();
+				topic.printHistory(TDTModel.writer);
 		}
 		
 		for(Topic topic:topics){
 			if(!topic.isNoiseTopic())
-				topic.printHistory();
+				topic.printHistory(TDTModel.writer);
 		}
 		
 		//very important!!!

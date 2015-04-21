@@ -1,5 +1,7 @@
 package qiaohuang.tdt.core;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -9,6 +11,7 @@ import org.ansj.domain.Term;
 import org.ansj.splitWord.analysis.NlpAnalysis;
 
 import qiaohuang.tdt.util.ArticleReader;
+import qiaohuang.tdt.util.ToString;
 
 
 
@@ -21,7 +24,7 @@ import qiaohuang.tdt.util.ArticleReader;
 
 public class Article {
 	
-	private String title, content, url, source;// source may be null
+	private String title, content, url, source,category;// category and source may be null
 	private Calendar calendar;
 	private HashMap<String,WordInfo> words;
 	private ArrayList<String> wordList;
@@ -66,6 +69,18 @@ public class Article {
 		
 		
 	}
+	
+	public void printInfo(BufferedWriter writer) throws IOException{
+		
+		writer.write(ToString.toString(calendar)+"\t");
+		writer.write(title+"\t");
+		if(category!=null)
+			writer.write(category+"\t");
+		if(source!=null)
+			writer.write(source+"\t");
+		writer.newLine();
+		
+	}
 
 
 
@@ -99,6 +114,14 @@ public class Article {
 
 	public void setSource(String source) {
 		this.source = source;
+	}
+	
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	public Calendar getCalendar() {

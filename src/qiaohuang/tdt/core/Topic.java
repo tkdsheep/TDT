@@ -1,5 +1,6 @@
 package qiaohuang.tdt.core;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -130,47 +131,42 @@ public class Topic {
 			isNoiseTopic = false;
 	}
 	
-	public void printHistory() throws IOException {
-		TDTModel.writer.write("Notice: this topic is dead!!!!!!!");
-		TDTModel.writer.newLine();
-		TDTModel.writer.write("topic id: "+topicId);
-		TDTModel.writer.newLine();
+	public void printHistory(BufferedWriter writer) throws IOException {
+		writer.write("Notice: this topic is dead!!!!!!!");
+		writer.newLine();
+		writer.write("topic id: "+topicId);
+		writer.newLine();
 		for (State state : historyState) {
-			TDTModel.writer.write(state.size+"\t");
-			TDTModel.writer.write(ToString.toString(state.calendar)+"\t");
+			writer.write(state.size+"\t");
+			writer.write(ToString.toString(state.calendar)+"\t");
 			int hotness = (int)(state.life*100);
 			for(int i=0;i<hotness;i++)
 				TDTModel.writer.write("|");
-			TDTModel.writer.write("\t"+hotness);
+			writer.write("\t"+hotness);
 			
-			TDTModel.writer.newLine();
+			writer.newLine();
 			
 		}
 		for(Article article:articles){
-			TDTModel.writer.write(ToString.toString(article.getCalendar())+"\t");
-			TDTModel.writer.write(article.getTitle());
-			TDTModel.writer.newLine();
-			
+			article.printInfo(writer);
 		}
 		TDTModel.writer.newLine();
 	}
 	
-	public void printCurrentInfo() throws IOException {
+	public void printCurrentInfo(BufferedWriter writer) throws IOException {
 
-		TDTModel.writer.write("topic id: " + this.topicId);
-		TDTModel.writer.newLine();
-		TDTModel.writer.write("topic life: " + this.life);
-		TDTModel.writer.newLine();
-		TDTModel.writer.write("topic size: " + this.articles.size());
-		TDTModel.writer.newLine();
+		writer.write("topic id: " + this.topicId);
+		writer.newLine();
+		writer.write("topic life: " + this.life);
+		writer.newLine();
+		writer.write("topic size: " + this.articles.size());
+		writer.newLine();
 
 		// print top 25 related articles
 		Collections.sort(this.newArticles, new ArticleComparator());
 		int i = 0;
 		for (Article article : this.newArticles) {
-			TDTModel.writer.write(ToString.toString(article.getCalendar())+" ");
-			TDTModel.writer.write(article.getTitle());
-			TDTModel.writer.newLine();
+			article.printInfo(writer);
 			if (++i > 25)
 				break;
 		}

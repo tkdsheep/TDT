@@ -20,8 +20,8 @@ public class TDTModel {
 	
 	public static BufferedWriter writer;
 	
-	public TDTModel() throws IOException{
-		writer = new BufferedWriter(new FileWriter(PathConfig.resultPath+"result.txt"));
+	public TDTModel(String resultFileName) throws IOException{
+		writer = new BufferedWriter(new FileWriter(PathConfig.resultPath+resultFileName));
 	}
 			
 	
@@ -98,8 +98,8 @@ public class TDTModel {
 		Collections.sort(topics, new TopicComparator());
 		for(Topic topic:topics){
 			if(topic.getNewArticles().size()>0)//TODO should be a global param
-				if(topic.getLife()>0.6)
-					topic.printCurrentInfo();
+				if(topic.getLife()>0.7)
+					topic.printCurrentInfo(writer);
 		}
 		
 	}

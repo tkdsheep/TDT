@@ -26,8 +26,8 @@ public static void main(String args[])throws Exception{
 		
 		SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");  
 		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(df.parse("2015-02-20"));
-		for(int i=1;i<=3;i++){
+		calendar.setTime(df.parse("2015-04-01"));
+		for(int i=1;i<=10;i++){
 			String sql = "select title,content,create_time from`htnewsroom`.`article` where create_time = '";
 			sql+=df.format(calendar.getTime())+"'";
 			System.out.println(sql);
@@ -47,13 +47,13 @@ public static void main(String args[])throws Exception{
 		//run TDT on new data
 		LinkedList<Topic> topics = new LinkedList<Topic>();
 		ArrayList<Topic> deletedTopics = new ArrayList<Topic>();
-		TDTModel model = new TDTModel();
+		TDTModel model = new TDTModel("ZK_Result.txt");
 		
 		
 		
 		
-		calendar.setTime(df.parse("2015-03-01"));
-		for(int i=1;i<=30;i++){
+		calendar.setTime(df.parse("2015-04-11"));
+		for(int i=1;i<=11;i++){
 			String sql = "select title,content,create_time from`htnewsroom`.`article` where create_time = '";
 			sql+=df.format(calendar.getTime())+"'";
 			System.out.println(sql);
@@ -65,12 +65,12 @@ public static void main(String args[])throws Exception{
 		
 		for(Topic topic:deletedTopics){
 			if(!topic.isNoiseTopic())
-				topic.printHistory();
+				topic.printHistory(TDTModel.writer);
 		}
 		
 		for(Topic topic:topics){
 			if(!topic.isNoiseTopic())
-				topic.printHistory();
+				topic.printHistory(TDTModel.writer);
 		}
 		
 		//very important!!!
